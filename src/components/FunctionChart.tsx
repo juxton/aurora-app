@@ -1,16 +1,17 @@
 import React from 'react';
 import { Chart, AxisOptions } from 'react-charts';
+import { Series } from '../data/dataTypes';
 
-function LogChart({
+function FunctionChart({
   data
 }: {
-  data: any // TODO: Define type
+  data: Series[]
 }) {
   const primaryAxis = React.useMemo<
     AxisOptions<typeof data[number]["data"][number]>
   >(
     () => ({
-      getValue: (datum) => datum.primary as unknown as Date,
+      getValue: (datum) => datum.primary,
     }),
     []
   );
@@ -20,7 +21,7 @@ function LogChart({
   >(
     () => [
       {
-        getValue: (datum) => datum.secondary,
+        getValue: (datum) => datum.primary,
       },
     ],
     []
@@ -37,4 +38,4 @@ function LogChart({
   );
 }
 
-export default LogChart;
+export default FunctionChart;

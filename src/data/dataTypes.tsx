@@ -1,10 +1,13 @@
-export type Bar = {
-  primary: Date
-  secondary: number
-  radius: number
+export type SeriesData = {
+  primary: number
 };
 
-export type Foo = {
+export type Series = {
   label: string  
-  data: Bar[]
+  data: SeriesData[]
 };
+
+export type SeriesFunction = {
+  label: string,
+  method: Function
+}

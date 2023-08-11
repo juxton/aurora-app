@@ -1,24 +1,20 @@
-import React from 'react';
 import { Container, Unstable_Grid2 as Grid } from '@mui/material';
-import useDemoConfig from './data/useDemoConfig';
-import LogTable from './components/LogTable';
-import LogChart from './components/LogChart';
-import './index.css';
+
+import SeriesTable from './components/SeriesTable';
+import FunctionTable from './components/FunctionTable';
+import FunctionChart from './components/FunctionChart';
 
 function App() {
-  const { data: config, randomizeData } = useDemoConfig({
-    datums: 4,
-    series: 10,
-    dataType: "time",
-  });
-
-  const [data, setData] = React.useState(config)
-
   return (
-    <Container sx={{ width: '100%' }}>
+    <Container>
       <Grid container spacing={2}>
-        <Grid xs={7}><LogTable {...{ data }} /></Grid>
-        <Grid xs={5}><LogChart {...{ data }} /></Grid>
+        <Grid lg={6}>
+          <SeriesTable />
+        </Grid>
+        <Grid lg={6}>
+          <FunctionTable key="table" />
+          {/* <FunctionChart {...{ data }} /> */}
+        </Grid>
       </Grid>
     </Container>
   )

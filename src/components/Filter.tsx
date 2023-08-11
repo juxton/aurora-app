@@ -1,11 +1,5 @@
-import { 
-  InputBase
-} from '@mui/material';
-
-import {
-  Column,
-  Table as ReactTable
-} from '@tanstack/react-table';
+import {  InputBase } from '@mui/material';
+import { Column, Table as ReactTable } from '@tanstack/react-table';
 
 function Filter({
   column,

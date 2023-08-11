@@ -42,7 +42,6 @@ const options = {
   snapCursor: [true, false],
 } as const;
 
-type DataType = "time" | "ordinal" | "linear";
 type ElementType = typeof options["elementType"][number];
 type PrimaryAxisType = typeof options["primaryAxisType"][number];
 type SecondaryAxisType = typeof options["secondaryAxisType"][number];
@@ -58,12 +57,10 @@ const optionKeys = Object.keys(options) as (keyof typeof options)[];
 export default function useChartConfig({
   series,
   datums = 10,
-  useR,
   show = [],
   count = 1,
   resizable = true,
   canRandomize = true,
-  dataType = "time",
   elementType = "line",
   primaryAxisType = "time",
   secondaryAxisType = "linear",
@@ -81,12 +78,10 @@ export default function useChartConfig({
 }: {
   series: number;
   datums?: number;
-  useR?: boolean;
   show?: (keyof typeof options)[];
   count?: number;
   resizable?: boolean;
   canRandomize?: boolean;
-  dataType?: DataType;
   elementType?: ElementType;
   primaryAxisType?: PrimaryAxisType;
   secondaryAxisType?: SecondaryAxisType;
@@ -106,7 +101,6 @@ export default function useChartConfig({
     count,
     resizable,
     canRandomize,
-    dataType,
     elementType,
     primaryAxisType,
     secondaryAxisType,
@@ -122,21 +116,15 @@ export default function useChartConfig({
     tooltipGroupingMode,
     snapCursor,
     datums,
-    data: makeDataFrom(dataType, series, datums, useR),
+    data: makeDataFrom(series, datums),
   });
 
   React.useEffect(() => {
     setState((old) => ({
       ...old,
-      data: makeDataFrom(dataType, series, datums, useR),
+      data: makeDataFrom(series, datums),
     }));
-  }, [count, dataType, datums, series, useR]);
-
-  const randomizeData = () =>
-    setState((old) => ({
-      ...old,
-      data: makeDataFrom(dataType, series, datums, useR),
-    }));
+  }, [count, datums, series]);
 
   const Options = optionKeys
     .filter((option) => show.indexOf(option) > -1)
@@ -167,79 +155,34 @@ export default function useChartConfig({
 
   return {
     ...state,
-    randomizeData,
     Options,
   };
 }
 
 function makeDataFrom(
-  dataType: DataType,
   series: number,
-  datums: number,
-  useR?: boolean
+  datums: number
 ) {
   return [
     ...new Array(series || Math.max(Math.round(Math.random() * 5), 1)),
-  ].map((d, i) => makeSeries(i, dataType, datums, useR));
+  ].map((d, i) => makeSeries(i, datums));
 }
 
 function makeSeries(
   i: number,
-  dataType: DataType,
-  datums: number,
-  useR?: boolean
+  datums: number
 ) {
-  const start = 0;
-  const startDate = new Date();
-  // startDate.setFullYear(2020);
-  startDate.setUTCHours(0);
-  startDate.setUTCMinutes(0);
-  startDate.setUTCSeconds(0);
-  startDate.setUTCMilliseconds(0);
-  // const length = 5 + Math.round(Math.random() * 15)
   const length = datums;
   const min = 0;
   const max = 100;
-  const rMin = 2;
-  const rMax = 20;
-  const nullChance = 0;
+  
   return {
-    label: `Snapshot ${i + 1}`,
+    label: `Series ${i + 1}`,
     data: [...new Array(length)].map((_, i) => {
-      let x;
-
-      if (dataType === "ordinal") {
-        x = `Ordinal Group ${start + i}`;
-      } else if (dataType === "time") {
-        x = new Date(startDate.getTime() + 5 * i);
-      } else if (dataType === "linear") {
-        x =
-          Math.random() < nullChance
-            ? null
-            : min + Math.round(Math.random() * (max - min));
-      } else {
-        x = start + i;
-      }
-
-      const distribution = 1.1;
-
-      const y =
-        Math.random() < nullChance
-          ? null
-          : min + Math.round(Math.random() * (max - min));
-
-      const r = !useR
-        ? undefined
-        : rMax -
-          Math.floor(
-            Math.log(Math.random() * (distribution ** rMax - rMin) + rMin) /
-              Math.log(distribution)
-          );
+      let x = min + Math.round(Math.random() * (max - min));
 
       return {
-        primary: x,
-        secondary: y,
-        radius: r,
+        primary: x
       };
     }),
   };

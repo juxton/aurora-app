@@ -1,91 +1,79 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TablePaginationActions from './TablePaginationActions';
 import CheckBox from './CheckBox';
-import { Foo } from '../data/dataTypes';
+import { Series } from '../data/dataTypes';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper } from '@mui/material';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import useDemoConfig from '../data/useDemoConfig';
+import { useStore } from '../data/store';
 
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Paper
-} from '@mui/material';
+const SeriesTable: React.FC = () => {
+  const { data: config } = useDemoConfig({
+    datums: 4,
+    series: 100
+  });
 
-import { 
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable
- } from "@tanstack/react-table";
- 
-function LogTable({
-  data,
-}: {
-  data: any
-}) {
-  const rerender = React.useReducer(() => ({}), {})[1]
+  const [data, setData] = React.useState(config)
+  
   const [rowSelection, setRowSelection] = React.useState({})
+  const { seriesStore } = useStore();
 
-  const columns = React.useMemo<ColumnDef<Foo>[]>(
+  useEffect(() => {
+    if (Object.keys(rowSelection).length) {
+      seriesStore.setSeries(table.getRow(Object.keys(rowSelection)[0]).original)
+    } else {
+      seriesStore.setSeries(undefined)
+    }
+  }, [rowSelection])
+  const columns = React.useMemo<ColumnDef<Series>[]>(
     () => [
       {
-        id: 'select',
-        header: ({ table }) => (
-          <CheckBox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <div className="px-1">
-            <CheckBox
-              {...{
-                checked: row.getIsSelected(),
-                disabled: !row.getCanSelect(),
-                indeterminate: row.getIsSomeSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </div>
-        )
-      },
-      {
-        header: 'Logs',
-        // footer: props => props.column.id,
+        id: 'header',
+        header: 'Series',
         columns: [
           {
             accessorFn: row => row.label,
-            id: 'snapshot',
-            cell: info => info.getValue(),
-            header: 'Snapshot'
+            id: 'Select',
+            cell: ({ row }) => (
+              <div className="px-1">
+                <CheckBox
+                  {...{
+                    checked: row.getIsSelected(),
+                    disabled: !row.getCanSelect(),
+                    indeterminate: row.getIsSomeSelected(),
+                    onChange: row.getToggleSelectedHandler(),
+                  }}
+                />
+              </div>
+            ),
+            header: 'Select'
           },
           {
-            accessorFn: row => row.data[0].secondary,
+            accessorFn: row => row.label,
+            id: 'name',
+            cell: info => info.getValue(),
+            header: 'Name'
+          },
+          {
+            accessorFn: row => row.data[0].primary,
             id: 'a',
             cell: info => info.getValue(),
             header: 'a'
           },
           {
-            accessorFn: row => row.data[1].secondary,
+            accessorFn: row => row.data[1].primary,
             id: 'b',
             cell: info => info.getValue(),
             header: 'b'
           },
           {
-            accessorFn: row => row.data[2].secondary,
+            accessorFn: row => row.data[2].primary,
             id: 'c',
             cell: info => info.getValue(),
             header: 'c'
           },
           {
-            accessorFn: row => row.data[3].secondary,
+            accessorFn: row => row.data[3].primary,
             id: 'd',
             cell: info => info.getValue(),
             header: 'd'
@@ -103,27 +91,22 @@ function LogTable({
       rowSelection,
     },
     enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setRowSelection,
     // Pipeline
     getCoreRowModel: getCoreRowModel(),
     // getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     //
-    debugTable: true,
+    // debugTable: true,
   })
 
   const { pageSize, pageIndex } = table.getState().pagination
 
-  console.log("ROW SELECTION", rowSelection)
-  Object.keys(rowSelection).map(key => {
-    const row = table.getRow(key)
-    console.log("ROW", row)
-  })
-
   return (
     <>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table>
           <TableHead>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
@@ -152,7 +135,7 @@ function LogTable({
           <TableBody>
             {table.getRowModel().rows.map(row => {
               return (
-                <TableRow key={row.id} onClick={() => console.log("DEBUG", row.getVisibleCells())}>
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map(cell => {
                     return (
                       <TableCell key={cell.id}>
@@ -188,10 +171,8 @@ function LogTable({
         }}
         ActionsComponent={TablePaginationActions}
       />
-      <pre>{Object.keys(rowSelection).length} of{' '} {table.getPreFilteredRowModel().rows.length} Total Rows Selected</pre>
-      {/* <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre> */}
     </>
-  )
-}
+  );
+};
 
-export default LogTable
+export default SeriesTable;
