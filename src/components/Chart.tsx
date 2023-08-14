@@ -1,11 +1,25 @@
 import React from 'react';
 import { Chart as TanChart, AxisOptions } from 'react-charts';
 import { SeriesData, SeriesFunction, functions } from '../data/store/SeriesStore';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../data/store';
+
+type Point = {
+  x: number
+  y: number
+}
+
+type ChartData = {
+  label: string
+  data: Point[]
+}
 
 const Chart = (props: any) => {
-  const data: any[] = functions.map((func: SeriesFunction) => {
+  const { seriesStore } = useStore();
+
+  const data: ChartData[] = functions.map((func: SeriesFunction) => {
     return {
-      label: func.method.name,
+      label: `${func.method.name}()`,
       data: props.data.map((datum: SeriesData) => {
         return {
           x: datum.primary,
@@ -19,7 +33,7 @@ const Chart = (props: any) => {
     AxisOptions<typeof data[number]["data"][number]>
   >(
     () => ({
-      getValue: (datum) => datum.x,
+      getValue: (datum) => datum.x
     }),
     []
   );
@@ -30,6 +44,7 @@ const Chart = (props: any) => {
     () => [
       {
         getValue: (datum) => datum.y,
+        elementType: seriesStore.chartMode
       },
     ],
     []
@@ -41,6 +56,11 @@ const Chart = (props: any) => {
         data,
         primaryAxis,
         secondaryAxes,
+        interactionMode: "closest",
+        onClickDatum: (datum) => {
+          console.log("Datum Click", datum)
+        },
+        padding: 50
       }}
     />
   );

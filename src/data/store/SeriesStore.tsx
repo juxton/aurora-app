@@ -31,29 +31,13 @@ export const functions: SeriesFunction[] = [
 
 export class SeriesStore {
   series?: Series = undefined;
-  transform?: Transform = undefined;
+  chartMode: 'line' | 'area' | 'bar' | 'bubble' = 'bubble';
 
   constructor() {
     makeObservable(this, {
       series: observable,
       setSeries: action
     });
-    autorun(
-      () => {
-        if (this.series === undefined) {
-          this.transform = undefined;
-        } else {
-          this.transform = {
-            label: "Transform",
-            data: this.series?.data.map((datum: SeriesData) => {
-              return {
-                x: datum.primary,
-                y: functions[0].method(datum.primary)
-              }
-            })
-          };
-        }
-      })
   }
 
   setSeries(_series: Series | undefined) {

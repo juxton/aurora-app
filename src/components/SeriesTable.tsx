@@ -145,7 +145,7 @@ const SeriesTable: React.FC = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: data.length }]}
+        rowsPerPageOptions={[10, 25, { label: 'All', value: data.length }]}
         component="div"
         count={table.getFilteredRowModel().rows.length}
         rowsPerPage={pageSize}

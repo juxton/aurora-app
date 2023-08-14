@@ -73,7 +73,7 @@ export default function useChartConfig({
   tooltipAnchor = "closest",
   tooltipAlign = "auto",
   interactionMode = "primary",
-  tooltipGroupingMode = "primary",
+  tooltipGroupingMode = "single",
   snapCursor = true,
 }: {
   series: number;
@@ -174,12 +174,12 @@ function makeSeries(
 ) {
   const length = datums;
   const min = 0;
-  const max = 100;
+  const max = 2;
   
   return {
     label: `Series ${i + 1}`,
     data: [...new Array(length)].map((_, i) => {
-      let x = min + Math.round(Math.random() * (max - min));
+      let x = min + (Math.random() * (max - min));
 
       return {
         primary: x
