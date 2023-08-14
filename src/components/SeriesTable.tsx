@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import TablePaginationActions from './TablePaginationActions';
 import CheckBox from './CheckBox';
-import { Series } from '../data/dataTypes';
+import { Series } from '../data/store/SeriesStore';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import useDemoConfig from '../data/useDemoConfig';
@@ -14,7 +14,7 @@ const SeriesTable: React.FC = () => {
   });
 
   const [data, setData] = React.useState(config)
-  
+
   const [rowSelection, setRowSelection] = React.useState({})
   const { seriesStore } = useStore();
 
@@ -25,60 +25,60 @@ const SeriesTable: React.FC = () => {
       seriesStore.setSeries(undefined)
     }
   }, [rowSelection])
+
   const columns = React.useMemo<ColumnDef<Series>[]>(
     () => [
       {
-        id: 'header',
-        header: 'Series',
-        columns: [
-          {
-            accessorFn: row => row.label,
-            id: 'Select',
-            cell: ({ row }) => (
-              <div className="px-1">
-                <CheckBox
-                  {...{
-                    checked: row.getIsSelected(),
-                    disabled: !row.getCanSelect(),
-                    indeterminate: row.getIsSomeSelected(),
-                    onChange: row.getToggleSelectedHandler(),
-                  }}
-                />
-              </div>
-            ),
-            header: 'Select'
-          },
-          {
-            accessorFn: row => row.label,
-            id: 'name',
-            cell: info => info.getValue(),
-            header: 'Name'
-          },
-          {
-            accessorFn: row => row.data[0].primary,
-            id: 'a',
-            cell: info => info.getValue(),
-            header: 'a'
-          },
-          {
-            accessorFn: row => row.data[1].primary,
-            id: 'b',
-            cell: info => info.getValue(),
-            header: 'b'
-          },
-          {
-            accessorFn: row => row.data[2].primary,
-            id: 'c',
-            cell: info => info.getValue(),
-            header: 'c'
-          },
-          {
-            accessorFn: row => row.data[3].primary,
-            id: 'd',
-            cell: info => info.getValue(),
-            header: 'd'
-          },
-        ],
+        accessorFn: row => row.label,
+        id: 'Select',
+        cell: ({ row }) => (
+          <CheckBox
+            {...{
+              checked: row.getIsSelected(),
+              disabled: !row.getCanSelect(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        )
+      },
+      {
+        accessorFn: row => row.label,
+        id: 'Series',
+        cell: info => info.getValue(),
+        header: 'Series #'
+      },
+      {
+        accessorFn: row => row.data[0].primary,
+        id: 'X0',
+        cell: info => info.getValue(),
+        header: ({ column }) => (
+          <>X<sub>0</sub></>
+        )
+      },
+      {
+        accessorFn: row => row.data[1].primary,
+        id: 'X1',
+        cell: info => info.getValue(),
+        header: ({ column }) => (
+          <>X<sub>1</sub></>
+        )
+      },
+      {
+        accessorFn: row => row.data[2].primary,
+        id: 'X2',
+        cell: info => info.getValue(),
+        header: ({ column }) => (
+          <>X<sub>2</sub></>
+        )
+      },
+      {
+        accessorFn: row => row.data[3].primary,
+        id: 'X3',
+        cell: info => info.getValue(),
+        header: ({ column }) => (
+          <>X<sub>3</sub></>
+        )
       },
     ],
     []
@@ -95,10 +95,7 @@ const SeriesTable: React.FC = () => {
     onRowSelectionChange: setRowSelection,
     // Pipeline
     getCoreRowModel: getCoreRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    //
-    // debugTable: true,
   })
 
   const { pageSize, pageIndex } = table.getState().pagination
@@ -106,7 +103,7 @@ const SeriesTable: React.FC = () => {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table>
+        <Table size='small'>
           <TableHead>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
@@ -119,11 +116,6 @@ const SeriesTable: React.FC = () => {
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                          {/* {header.column.getCanFilter() ? (
-                            <div>
-                              <Filter column={header.column} table={table} />
-                            </div>
-                          ) : null} */}
                         </div>
                       )}
                     </TableCell>

@@ -1,41 +1,16 @@
 import React from 'react';
-import { Chart, AxisOptions } from 'react-charts';
-import { Series } from '../data/dataTypes';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../data/store';
+import Chart from './Chart';
 
-function FunctionChart({
-  data
-}: {
-  data: Series[]
-}) {
-  const primaryAxis = React.useMemo<
-    AxisOptions<typeof data[number]["data"][number]>
-  >(
-    () => ({
-      getValue: (datum) => datum.primary,
-    }),
-    []
-  );
-
-  const secondaryAxes = React.useMemo<
-    AxisOptions<typeof data[number]["data"][number]>[]
-  >(
-    () => [
-      {
-        getValue: (datum) => datum.primary,
-      },
-    ],
-    []
-  );
+const FunctionChart: React.FC = () => {
+  const { seriesStore } = useStore();
 
   return (
-    <Chart
-      options={{
-        data,
-        primaryAxis,
-        secondaryAxes,
-      }}
-    />
+    <>
+      {(seriesStore.series?.data !== undefined) && <Chart data={seriesStore.series.data} />}
+    </>
   );
 }
 
-export default FunctionChart;
+export default observer(FunctionChart);

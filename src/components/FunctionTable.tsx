@@ -1,53 +1,45 @@
 import React from 'react';
-import { SeriesData, SeriesFunction } from '../data/dataTypes';
+import { SeriesData, SeriesFunction } from '../data/store/SeriesStore';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../data/store';
+import { functions } from '../data/store/SeriesStore';
 
 const FunctionTable: React.FC = () => {
   const { seriesStore } = useStore();
 
-  const functions: SeriesFunction[] = [
-    { label: "sin()", method: Math.sin },
-    { label: "cos()", method: Math.cos },
-    { label: "exp()", method: Math.exp },
-    { label: "tan()", method: Math.tan }
-  ];
-
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell colSpan={5}>
-                {seriesStore.series?.label || "Please Select Series"}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                Method
-              </TableCell>
-              {seriesStore.series?.data.map((datum: SeriesData, datumIndex: number) => (
-                <TableCell key={datumIndex}>
-                  {datum.primary}
+      {(seriesStore.series !== undefined) && (
+        <TableContainer component={Paper}>
+          <Table size='small'>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  {seriesStore.series.label}
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
+                {seriesStore.series?.data.map((datum: SeriesData, datumIndex: number) => (
+                  <TableCell key={datumIndex}>
+                    X<sub>{datumIndex}</sub>: {datum.primary}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {functions.map((func: SeriesFunction, funcIndex: number) => (
                 <TableRow key={funcIndex}>
-                  <TableCell>{func.label}</TableCell>
+                  <TableCell>{func.method.name}(X)</TableCell>
                   {seriesStore.series?.data.map((datum: SeriesData, datumIndex: number) => (
-                    <TableCell key={datumIndex}>{func.method(datum.primary)}</TableCell>  
+                    <TableCell key={datumIndex}>
+                      Y<sub>{datumIndex}</sub>: {func.method(datum.primary)}
+                    </TableCell>
                   ))}
-                  
                 </TableRow>
               ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 }
