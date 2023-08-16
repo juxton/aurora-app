@@ -43,7 +43,7 @@ const SeriesTable: React.FC = () => {
         )
       },
       {
-        accessorFn: row => row.label,
+        accessorFn: row => row.id,
         id: 'Series',
         cell: info => info.getValue(),
         header: 'Series #'
