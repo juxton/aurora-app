@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Aurora App",
+  "name": "Demo application for Aurora",
   "icons": [
     {
       "src": "favicon.ico",
