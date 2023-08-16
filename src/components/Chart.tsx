@@ -15,15 +15,18 @@ type ChartData = {
 }
 
 const Chart = (props: any) => {
+  const clamp: number = 2;
   const { seriesStore } = useStore();
 
   const data: ChartData[] = functions.map((func: SeriesFunction) => {
     return {
       label: `${func.method.name}()`,
       data: props.data.map((datum: SeriesData) => {
+        const y: number = Number(func.method(datum.primary).toFixed(2));
+
         return {
           x: datum.primary,
-          y: func.method(datum.primary)
+          y: (y >= -clamp && y <= clamp) ? y : null,
         }
       })
     }
@@ -60,7 +63,16 @@ const Chart = (props: any) => {
         onClickDatum: (datum) => {
           console.log("Datum Click", datum)
         },
-        padding: 50
+        padding: 50,
+        tooltip: {
+          render: (props) => (
+            <div>
+              {props.focusedDatum?.seriesLabel}<br />
+              X: {props.focusedDatum?.primaryValue}<br />
+              Y: {props.focusedDatum?.secondaryValue}<br />
+            </div>
+          )
+        }
       }}
     />
   );
