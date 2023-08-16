@@ -16,7 +16,7 @@ const FunctionTable: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  {seriesStore.series.label}
+                  {seriesStore.series.id}
                 </TableCell>
                 {seriesStore.series?.data.map((datum: SeriesData, datumIndex: number) => (
                   <TableCell key={datumIndex}>
@@ -31,7 +31,7 @@ const FunctionTable: React.FC = () => {
                   <TableCell>{func.method.name}(X)</TableCell>
                   {seriesStore.series?.data.map((datum: SeriesData, datumIndex: number) => (
                     <TableCell key={datumIndex}>
-                      Y<sub>{datumIndex}</sub>: {func.method(datum.primary)}
+                      Y<sub>{datumIndex}</sub>: {Number(func.method(datum.primary).toFixed(2))}
                     </TableCell>
                   ))}
                 </TableRow>

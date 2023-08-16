@@ -29,7 +29,7 @@ const SeriesTable: React.FC = () => {
   const columns = React.useMemo<ColumnDef<Series>[]>(
     () => [
       {
-        accessorFn: row => row.label,
+        accessorFn: row => row.id,
         id: 'Select',
         cell: ({ row }) => (
           <CheckBox

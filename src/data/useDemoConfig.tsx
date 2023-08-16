@@ -173,16 +173,19 @@ function makeSeries(
   datums: number
 ) {
   const length = datums;
-  const min = 0;
-  const max = 2;
+  const min: number = 0;
+  const max: number = 2;
+
+  const count = 64;
+  const start: number = (i * (Math.PI/2));
+  const step = 0.1;
   
   return {
-    label: `Series ${i + 1}`,
-    data: [...new Array(length)].map((_, i) => {
-      let x = min + (Math.random() * (max - min));
-
+    id: i,
+    data: [...new Array(count)].map((_, i) => {
+      let x: number = start + (i * step); //min + (Math.random() * (max - min));
       return {
-        primary: x
+        primary: Number(x.toFixed(2))
       };
     }),
   };

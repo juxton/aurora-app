@@ -15,7 +15,7 @@ export type SeriesData = {
 };
 
 export type Series = {
-  label: string
+  id: number
   data: SeriesData[]
 };
 
@@ -25,13 +25,13 @@ export type SeriesFunction = {
 
 export const functions: SeriesFunction[] = [
   { method: Math.sin },
-  { method: Math.cos },
-  { method: Math.tan }
+  { method: Math.tan },
+  { method: Math.cos }
 ];
 
 export class SeriesStore {
   series?: Series = undefined;
-  chartMode: 'line' | 'area' | 'bar' | 'bubble' = 'bubble';
+  chartMode: 'line' | 'area' | 'bar' | 'bubble' = 'line';
 
   constructor() {
     makeObservable(this, {
