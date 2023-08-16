@@ -15,9 +15,18 @@ const SeriesTable: React.FC = () => {
 
   const [data, setData] = React.useState(config)
 
+  const [init, setInit] = React.useState(false);
   const [rowSelection, setRowSelection] = React.useState({})
   const { seriesStore } = useStore();
 
+  // Auto select first row
+  useEffect(() => {
+    if (!init && table.getRowModel().rows.length) {
+      table.setRowSelection({ 0: true });
+      setInit(true);
+    }
+  }, [init])
+  
   useEffect(() => {
     if (Object.keys(rowSelection).length) {
       seriesStore.setSeries(table.getRow(Object.keys(rowSelection)[0]).original)
