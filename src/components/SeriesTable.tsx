@@ -3,7 +3,7 @@ import TablePaginationActions from './TablePaginationActions';
 import CheckBox from './CheckBox';
 import { Series } from '../data/store/SeriesStore';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, RowSelectionState, createColumnHelper, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import useDemoConfig from '../data/useDemoConfig';
 import { useStore } from '../data/store';
 
@@ -35,6 +35,19 @@ const SeriesTable: React.FC = () => {
     }
   }, [rowSelection])
 
+  const columnHelper = createColumnHelper<Series>();
+
+  let cols:any[] = [];
+  for( let i = 0; i < 64; i++) {
+    cols.push(columnHelper.accessor((row) => row.data[i].primary, {
+      id: i.toString(),
+      cell: info => info.getValue(),
+      header: ({column}) => (
+        <span>X<sub>{i}</sub></span>
+      )
+    }))
+  }
+
   const columns = React.useMemo<ColumnDef<Series>[]>(
     () => [
       {
@@ -53,42 +66,11 @@ const SeriesTable: React.FC = () => {
       },
       {
         accessorFn: row => row.id,
-        id: 'Series',
+        id: 'id',
         cell: info => info.getValue(),
-        header: 'Series #'
+        header: 'Series'
       },
-      {
-        accessorFn: row => row.data[0].primary,
-        id: 'X0',
-        cell: info => info.getValue(),
-        header: ({ column }) => (
-          <>X<sub>0</sub></>
-        )
-      },
-      {
-        accessorFn: row => row.data[1].primary,
-        id: 'X1',
-        cell: info => info.getValue(),
-        header: ({ column }) => (
-          <>X<sub>1</sub></>
-        )
-      },
-      {
-        accessorFn: row => row.data[2].primary,
-        id: 'X2',
-        cell: info => info.getValue(),
-        header: ({ column }) => (
-          <>X<sub>2</sub></>
-        )
-      },
-      {
-        accessorFn: row => row.data[3].primary,
-        id: 'X3',
-        cell: info => info.getValue(),
-        header: ({ column }) => (
-          <>X<sub>3</sub></>
-        )
-      },
+      ...cols
     ],
     []
   )
