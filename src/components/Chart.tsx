@@ -3,6 +3,7 @@ import { Chart as TanChart, AxisOptions } from 'react-charts';
 import { SeriesData, SeriesFunction, functions } from '../data/store/SeriesStore';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../data/store';
+import { Card, CardContent, CardHeader, Divider } from '@mui/material';
 
 type Point = {
   x: number
@@ -20,7 +21,7 @@ const Chart = (props: any) => {
 
   const data: ChartData[] = functions.map((func: SeriesFunction) => {
     return {
-      label: `${func.method.name}()`,
+      label: func.method.name,
       data: props.data.map((datum: SeriesData) => {
         const y: number = Number(func.method(datum.primary).toFixed(2));
 
@@ -66,11 +67,13 @@ const Chart = (props: any) => {
         padding: 50,
         tooltip: {
           render: (props) => (
-            <div>
-              {props.focusedDatum?.seriesLabel}<br />
-              X: {props.focusedDatum?.primaryValue}<br />
-              Y: {props.focusedDatum?.secondaryValue}<br />
-            </div>
+            <Card variant='outlined'>
+              <CardContent>
+                <strong>{props.focusedDatum?.seriesLabel}(X<sub>{props.focusedDatum?.index}</sub>)</strong><br />
+                X<sub>{props.focusedDatum?.index}</sub>: {props.focusedDatum?.primaryValue}<br />
+                Y<sub>{props.focusedDatum?.index}</sub>: {props.focusedDatum?.secondaryValue}
+              </CardContent>
+            </Card>
           )
         }
       }}
