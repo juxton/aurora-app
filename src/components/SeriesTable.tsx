@@ -9,8 +9,8 @@ import { useStore } from '../data/store';
 
 const SeriesTable: React.FC = () => {
   const { data: config } = useDemoConfig({
-    datums: 4,
-    series: 100
+    datums: 64,
+    series: 4
   });
 
   const [data, setData] = React.useState(config)
@@ -53,6 +53,7 @@ const SeriesTable: React.FC = () => {
       {
         accessorFn: row => row.id,
         id: 'Select',
+        header: '',
         cell: ({ row }) => (
           <CheckBox
             {...{
@@ -67,8 +68,8 @@ const SeriesTable: React.FC = () => {
       {
         accessorFn: row => row.id,
         id: 'id',
-        cell: info => info.getValue(),
-        header: 'Series'
+        header: 'Series',
+        cell: info => info.getValue()
       },
       ...cols
     ],

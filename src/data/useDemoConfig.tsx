@@ -1,7 +1,5 @@
 import React from "react";
 
-//
-
 const options = {
   elementType: ["line", "area", "bar"],
   primaryAxisType: ["linear", "time", "log", "band"],
@@ -176,13 +174,12 @@ function makeSeries(
   const min: number = 0;
   const max: number = 2;
 
-  const count = 64;
   const start: number = (i * (Math.PI/2));
   const step = 0.1;
   
   return {
     id: i,
-    data: [...new Array(count)].map((_, i) => {
+    data: [...new Array(length)].map((_, i) => {
       let x: number = start + (i * step); //min + (Math.random() * (max - min));
       return {
         primary: Number(x.toFixed(2))

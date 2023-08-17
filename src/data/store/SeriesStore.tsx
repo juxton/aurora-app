@@ -29,19 +29,32 @@ export const functions: SeriesFunction[] = [
   { method: Math.cos }
 ];
 
+export type SelectedDatum = {
+  seriesIndex: number
+  method: string
+}
+
 export class SeriesStore {
+  datum?: SelectedDatum = undefined;
   series?: Series = undefined;
   chartMode: 'line' | 'area' | 'bar' | 'bubble' = 'line';
 
   constructor() {
     makeObservable(this, {
+      datum: observable,
       series: observable,
-      setSeries: action
+      setSeries: action,
+      setDatum: action
     });
   }
 
   setSeries(_series: Series | undefined) {
     this.series = _series;
+    this.setDatum(undefined);
+  }
+
+  setDatum(_datum: SelectedDatum | undefined) {
+    this.datum = _datum;
   }
 }
 

@@ -3,7 +3,7 @@ import { Chart as TanChart, AxisOptions } from 'react-charts';
 import { SeriesData, SeriesFunction, functions } from '../data/store/SeriesStore';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../data/store';
-import { Card, CardContent, CardHeader, Divider } from '@mui/material';
+import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/material';
 
 type Point = {
   x: number
@@ -62,14 +62,29 @@ const Chart = (props: any) => {
         secondaryAxes,
         interactionMode: "closest",
         onClickDatum: (datum) => {
-          console.log("Datum Click", datum)
+          if ( !datum ) {
+            seriesStore.setDatum(undefined);
+          } else {
+            seriesStore.setDatum({
+                seriesIndex: datum.index,
+                method: datum.seriesLabel
+              });
+          }
         },
-        padding: 50,
+        padding: {
+          top: 0,
+          right: 50,
+          bottom: 0,
+          left: 0
+        },
+        onFocusDatum(datum) {
+          
+        },
         tooltip: {
           render: (props) => (
             <Card variant='outlined'>
               <CardContent>
-                <strong>{props.focusedDatum?.seriesLabel}(X<sub>{props.focusedDatum?.index}</sub>)</strong><br />
+                <strong>{props.focusedDatum?.seriesLabel}(X<sub>{props.focusedDatum?.index}</sub>) = Y<sub>{props.focusedDatum?.index}</sub></strong><br />
                 X<sub>{props.focusedDatum?.index}</sub>: {props.focusedDatum?.primaryValue}<br />
                 Y<sub>{props.focusedDatum?.index}</sub>: {props.focusedDatum?.secondaryValue}
               </CardContent>
